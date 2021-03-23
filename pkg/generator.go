@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 
+	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
 )
 
@@ -28,8 +29,15 @@ func Generate(template *Template, outputPath string) error {
 				return err
 			}
 
+			if layer.Width == 0 && layer.Height == 0 {
+				layer.Width = img.Bounds().Dx()
+				layer.Height = img.Bounds().Dy()
+			}
+
+			resizedImg := imaging.Resize(img, layer.Width, layer.Height, imaging.Lanczos)
+
 			// Draw the image.
-			dc.DrawImage(img, layer.X, layer.Y)
+			dc.DrawImage(resizedImg, layer.X, layer.Y)
 		case "text":
 			size := float64(layer.Size)
 			px := size
@@ -40,7 +48,11 @@ func Generate(template *Template, outputPath string) error {
 				return err
 			}
 
-			dc.DrawString(layer.Content, float64(layer.X), float64(layer.Y)+px)
+			if layer.Width != 0 {
+				dc.DrawStringWrapped(layer.Content, float64(layer.X), float64(layer.Y)+px, 0, 0, float64(layer.Width), 1.5, gg.AlignLeft)
+			} else {
+				dc.DrawString(layer.Content, float64(layer.X), float64(layer.Y)+px)
+			}
 		}
 	}
 
