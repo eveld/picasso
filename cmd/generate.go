@@ -87,7 +87,7 @@ func randSeq(n int) string {
 func init() {
 	generateCmd.Flags().StringVarP(&templatePath, "template", "t", "", "Use this template to generate the asset")
 	generateCmd.Flags().StringVarP(&outputPath, "output", "o", "", "Output the generated asset to this path")
-	generateCmd.Flags().StringSliceVarP(&variables, "var", "", nil, "Allows setting variables from the command line, variables are specified as a key and value, e.g --var key=value. Can be specified multiple times")
+	generateCmd.Flags().StringArrayVarP(&variables, "var", "", nil, "Allows setting variables from the command line, variables are specified as a key and value, e.g --var key=value. Can be specified multiple times")
 	generateCmd.Flags().StringVarP(&csvPath, "csv", "", "", "Path to read csv variables from")
 	generateCmd.Flags().StringVarP(&csvOutputVar, "csv-var", "", "", "The variable to use when naming files generated from csv variables")
 
