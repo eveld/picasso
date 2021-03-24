@@ -1,6 +1,6 @@
 # Generate assets from templates
 
-Picasso is a tool that can take in a template and data, and generate images from them.
+Picasso is a tool that can take a template and data, and generate images from them.
 The templates that Picasso uses are written in HCL (HashiCorp Configuration Language) and define the input, output and design of the resulting image.
 
 ## Running the generator
