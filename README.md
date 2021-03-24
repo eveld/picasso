@@ -31,7 +31,7 @@ You can specify as many `--var` flags as you want.
 
 ### Reading variables from csv files
 
-When you need to generate many different images from the same template, you can pass in variables through a .csv file.
+When you need to generate many different images from the same template, you can pass in variables through a `.csv` file.
 
 Any variables that are passed in via the csv file will be replaced.
 
