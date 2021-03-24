@@ -14,7 +14,8 @@ The resulting image will be written to the location specified using the `-o` or 
 picasso generate -t template.hcl -o output.png
 ```
 
-An example of a generated image using a template from the [templates]() repository is this speaker card that was generated using the HashiTalks regional speaker card template.
+An example of a generated image using a template from the [templates](https://github.com/eveld/picasso-templates) repository is this speaker card that was generated using the HashiTalks regional speaker card template.
+
 ![Example](https://github.com/eveld/picasso-templates/raw/master/hashitalks/regional/examples/speaker_1line.png "Speaker card example")
 
 
