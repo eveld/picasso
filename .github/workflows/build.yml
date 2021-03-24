@@ -1,0 +1,118 @@
+---
+
+name: Build
+on: [push]
+
+jobs:
+  build:
+    env:
+      GONOSUMDB: "github.com/moby/moby"
+      GO111MODULE: "on"
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.2
+
+      - name: Get dependencies
+        run: |
+          go get -v -t ./...
+      - name: Unit Test
+        run: |
+          go test -v ./...
+      - name: Build
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/amd64/picasso
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -o bin/arm/6/picasso
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o bin/arm/7/picasso
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o bin/darwin/picasso
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o bin/windows/picasso.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: |
+            ./bin
+  release:
+    env:
+      GONOSUMDB: "github.com/moby/moby"
+
+    name: Release Application
+    needs: build
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'dev') || contains(github.ref, 'v')
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: binaries
+          path: bin
+
+      - name: Zip binaries
+        run: |
+          zip -j picasso_linux_amd64.zip ./bin/amd64/picasso
+          zip -j picasso_linux_arm6.zip ./bin/arm/6/picasso
+          zip -j picasso_linux_arm7.zip ./bin/arm/7/picasso
+          zip -j picasso_darwin_amd64.zip ./bin/darwin/picasso
+          zip -j picasso_windows_amd64.zip ./bin/windows/picasso.exe
+
+      - name: Create Release
+        id: create_release
+        if: contains(github.ref, 'v0')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset Linux AMD64
+        if: contains(github.ref, 'v0')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./picasso_linux_amd64.zip
+          asset_name: picasso_linux_amd64.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset Arm 6
+        if: contains(github.ref, 'v0')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./picasso_linux_arm6.zip
+          asset_name: picasso_linux_arm6.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset Arm 7
+        if: contains(github.ref, 'v0')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./picasso_linux_arm7.zip
+          asset_name: picasso_linux_arm7.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset Windows
+        if: contains(github.ref, 'v0')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./picasso_windows_amd64.zip
+          asset_name: picasso_windows_amd64.zip
+          asset_content_type: application/zip

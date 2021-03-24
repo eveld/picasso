@@ -18,7 +18,6 @@ An example of a generated image using a template from the [templates](https://gi
 
 ![Example](https://github.com/eveld/picasso-templates/raw/master/hashitalks/regional/examples/speaker_1line.png "Speaker card example")
 
-
 ### Passing in variables
 
 If you want to override variables from the command line, you can specify them using the `--var` arguments and supplying a key/value pair as `key=value` where key is the name of the variable and value is the value of the variable.
