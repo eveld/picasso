@@ -16,6 +16,24 @@ func Generate(template *Template, outputPath string) error {
 
 	for _, layer := range template.Layers {
 		switch layer.Type {
+		case "rectangle":
+			switch layer.Color.Type {
+			case "hex":
+				dc.SetHexColor(layer.Color.Value)
+			case "gradient":
+				g := gg.NewLinearGradient(float64(layer.Color.Start.X), float64(layer.Color.Start.Y), float64(layer.Color.End.X), float64(layer.Color.End.Y))
+				for _, stop := range layer.Color.Stops {
+					c, err := ParseHexColor(stop.Value)
+					if err != nil {
+						return err
+					}
+					g.AddColorStop(float64(stop.Position), c)
+				}
+				dc.SetFillStyle(g)
+			}
+			dc.DrawRectangle(float64(layer.X), float64(layer.Y), float64(layer.Width), float64(layer.Height))
+			dc.Fill()
+
 		case "image":
 			// Decode the base64 string.
 			content, err := base64.StdEncoding.DecodeString(layer.Content)

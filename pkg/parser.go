@@ -21,13 +21,32 @@ import (
 type Layer struct {
 	Type    string `hcl:"type,label"`
 	Name    string `hcl:"name,label"`
-	Content string `hcl:"content"`
+	Content string `hcl:"content,optional"`
 	X       int    `hcl:"x,optional"`
 	Y       int    `hcl:"y,optional"`
 	Width   int    `hcl:"width,optional"`
 	Height  int    `hcl:"height,optional"`
 	Size    int    `hcl:"size,optional"`
 	Font    string `hcl:"font,optional"`
+	Color   *Color `hcl:"color,block"`
+}
+
+type Color struct {
+	Type  string    `hcl:"type,label"`
+	Value string    `hcl:"value,optional"`
+	Start *Position `hcl:"start,block"`
+	End   *Position `hcl:"end,block"`
+	Stops []Stop    `hcl:"stop,block"`
+}
+
+type Position struct {
+	X int `hcl:"x"`
+	Y int `hcl:"y"`
+}
+
+type Stop struct {
+	Position float32 `hcl:"position"`
+	Value    string  `hcl:"value"`
 }
 
 type Output struct {
