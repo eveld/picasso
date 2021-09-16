@@ -18,6 +18,10 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 )
 
+type Picasso struct {
+	Version string `hcl:"version,optional"`
+}
+
 type Layer struct {
 	Type    string `hcl:"type,label"`
 	Name    string `hcl:"name,label"`
@@ -28,15 +32,8 @@ type Layer struct {
 	Height  int    `hcl:"height,optional"`
 	Size    int    `hcl:"size,optional"`
 	Font    string `hcl:"font,optional"`
-	Color   *Color `hcl:"color,block"`
-}
-
-type Color struct {
-	Type  string    `hcl:"type,label"`
-	Value string    `hcl:"value,optional"`
-	Start *Position `hcl:"start,block"`
-	End   *Position `hcl:"end,block"`
-	Stops []Stop    `hcl:"stop,block"`
+	Color   string `hcl:"color,optional"`
+	Anchor  string `hcl:"anchor,optional"`
 }
 
 type Position struct {
@@ -56,6 +53,7 @@ type Output struct {
 }
 
 type Template struct {
+	Picasso   []Picasso  `hcl:"picasso,block"`
 	Output    Output     `hcl:"output,block"`
 	Layers    []Layer    `hcl:"layer,block"`
 	Variables []Variable `hcl:"variable,block"`

@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const version = "v0.2.0"
+
 var rootCmd = &cobra.Command{
 	Use:   "picasso",
 	Short: "Picasso generates graphical assets from HCL2 templates",
@@ -14,6 +16,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(versionCmd)
 }
 
 // Execute runs the main command.

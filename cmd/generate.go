@@ -54,7 +54,7 @@ var generateCmd = &cobra.Command{
 				filename := fmt.Sprintf("%s-%s", file, hash)
 
 				outputPath := fmt.Sprintf("%s/%s.png", filepath.Dir(outputPath), filename)
-				err = generator.Generate(template, outputPath)
+				err = generator.Generate(template, version, outputPath)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -66,7 +66,7 @@ var generateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 
-			err = generator.Generate(template, outputPath)
+			err = generator.Generate(template, version, outputPath)
 			if err != nil {
 				log.Fatal(err)
 			}
