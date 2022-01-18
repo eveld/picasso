@@ -42,16 +42,16 @@ var generateCmd = &cobra.Command{
 					log.Fatal(err)
 				}
 
-				hash := randSeq(4)
-
-				base := "output"
+				filename := ""
 				if csvOutputVar != "" {
-					base = filepath.Base(parameters[csvOutputVar])
+					base := filepath.Base(parameters[csvOutputVar])
+					filename = strings.TrimSuffix(base, filepath.Ext(base))
+				} else {
+					hash := randSeq(4)
+					base := "output"
+					file := strings.TrimSuffix(base, filepath.Ext(base))
+					filename = fmt.Sprintf("%s-%s", file, hash)
 				}
-
-				// Trim off any file extensions if present.
-				file := strings.TrimSuffix(base, filepath.Ext(base))
-				filename := fmt.Sprintf("%s-%s", file, hash)
 
 				outputPath := fmt.Sprintf("%s/%s.png", filepath.Dir(outputPath), filename)
 				err = generator.Generate(template, version, outputPath)
@@ -59,7 +59,6 @@ var generateCmd = &cobra.Command{
 					log.Fatal(err)
 				}
 			}
-
 		} else {
 			template, err := generator.ParseTemplate(templatePath, parameters)
 			if err != nil {
