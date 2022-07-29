@@ -31,6 +31,7 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -o bin/arm/6/picasso
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o bin/arm/7/picasso
           CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o bin/darwin/picasso
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o bin/darwin-arm64/picasso
           CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o bin/windows/picasso.exe
       - uses: actions/upload-artifact@v2
         with:
@@ -59,6 +60,7 @@ jobs:
           zip -j picasso_linux_arm6.zip ./bin/arm/6/picasso
           zip -j picasso_linux_arm7.zip ./bin/arm/7/picasso
           zip -j picasso_darwin_amd64.zip ./bin/darwin/picasso
+          zip -j picasso_darwin_arm64.zip ./bin/darwin-arm64/picasso
           zip -j picasso_windows_amd64.zip ./bin/windows/picasso.exe
 
       - name: Create Release
@@ -115,6 +117,17 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./picasso_darwin_amd64.zip
           asset_name: picasso_darwin_amd64.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset Darwin arm64
+        if: contains(github.ref, 'v0')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./picasso_darwin_arm64.zip
+          asset_name: picasso_darwin_arm64.zip
           asset_content_type: application/zip
 
       - name: Upload Release Asset Windows
